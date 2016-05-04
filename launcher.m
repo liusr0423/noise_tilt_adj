@@ -64,6 +64,7 @@ if ~const.demo_static
 
 else
     nsess = 1;
+    vpcode='demo';
 end
 
 for sess = 1:str2double(nsess)
