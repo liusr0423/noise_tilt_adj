@@ -15,7 +15,7 @@ home;
 tic;
 
 % general parameters
-const.demo_static = 0;
+const.demo_static = -1;
 const.gammaLinear = 0;      % use monitor linearization
 const.saveMovie   = 0;
 const.nTrialMovie   = 5;
@@ -30,6 +30,12 @@ newFile = 0;
 
 fprintf(1,'\nPerceptual task, used to find perceived vertical (noise patches) (27/4/2016)\n');
 
+% static demo mode?
+FlushEvents('keyDown');
+while const.demo_static~=1 && const.demo_static~=0
+    const.demo_static = input('\n\n>>>> Static demo mode? (1=yes; 0=no):  ');
+end
+    
 if ~const.demo_static
     while ~newFile
         [vpcode] = getVpCode;
