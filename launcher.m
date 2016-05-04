@@ -30,59 +30,18 @@ newFile = 0;
 
 fprintf(1,'\nPerceptual task, used to find perceived vertical (noise patches) (27/4/2016)\n');
 
-while ~newFile
-    [vpcode] = getVpCode;
+if ~const.demo_static
+    while ~newFile
+        [vpcode] = getVpCode;
 
-    % create data file
-    datFile = sprintf('%s.mat',vpcode);
-    
-    % dir names
-    subDir=substr(vpcode, 0, 4);
-    sessionDir=substr(vpcode, 5, 2);
-    resdir=sprintf('data/%s/%s',subDir,sessionDir);
-    
-    if exist(resdir,'file')==7
-        o = input('      This directory exists already. Should I continue/overwrite it [y / n]? ','s');
-        if strcmp(o,'y')
-            newFile = 1;
-            % delete files to be overwritten?
-            if exist([resdir,'/',datFile])>0;                    delete([resdir,'/',datFile]); end
-            if exist([resdir,'/',sprintf('%s.edf',vpcode)])>0;   delete([resdir,'/',sprintf('%s.edf',vpcode)]); end
-            if exist([resdir,'/',sprintf('%s',vpcode)])>0;       delete([resdir,'/',sprintf('%s',vpcode)]); end
-        end
-    else
-        newFile = 1;
-        mkdir(resdir);
-    end
-end
-
-currentDir = cd;
-
-% how many consecutive session?
-nsess = getTaskInfo;
-
-for sess = 1:str2double(nsess)
-    
-    cd(currentDir);
-    
-    % update session number e vpcode, create directory
-    actualSess = str2double(sessionDir) + sess -1;
-    actualSessStr = num2str(actualSess);
-    
-    if length(actualSessStr)==1
-        actualSessStr = strcat('0',actualSessStr);
-    end
-    
-    if sess > 1
-        vpcode = sprintf('%s%s',subDir,actualSessStr);
-        
         % create data file
         datFile = sprintf('%s.mat',vpcode);
     
         % dir names
-        resdir=sprintf('data/%s/%s',subDir,actualSessStr);
-        
-        % keep the control to avoid potential deleting of good data
+        subDir=substr(vpcode, 0, 4);
+        sessionDir=substr(vpcode, 5, 2);
+        resdir=sprintf('data/%s/%s',subDir,sessionDir);
+    
         if exist(resdir,'file')==7
             o = input('      This directory exists already. Should I continue/overwrite it [y / n]? ','s');
             if strcmp(o,'y')
@@ -96,7 +55,56 @@ for sess = 1:str2double(nsess)
             newFile = 1;
             mkdir(resdir);
         end
-        
+    end
+
+    currentDir = cd;
+
+    % how many consecutive session?
+    nsess = getTaskInfo;
+
+else
+    nsess = 1;
+end
+
+for sess = 1:str2double(nsess)
+    
+    if ~const.demo_static
+        cd(currentDir);
+    
+        % update session number e vpcode, create directory
+        actualSess = str2double(sessionDir) + sess -1;
+        actualSessStr = num2str(actualSess);
+    
+        if length(actualSessStr)==1
+            actualSessStr = strcat('0',actualSessStr);
+        end
+    else
+        actualSess = 1;
+    end
+    
+    if sess > 1
+        vpcode = sprintf('%s%s',subDir,actualSessStr);
+    
+        % create data file
+        datFile = sprintf('%s.mat',vpcode);
+    
+        % dir names
+        resdir=sprintf('data/%s/%s',subDir,actualSessStr);
+    
+        % control to avoid potential deleting of good data
+        if exist(resdir,'file')==7
+            o = input('      This directory exists already. Should I continue/overwrite it [y / n]? ','s');
+            if strcmp(o,'y')
+                newFile = 1;
+                % delete files to be overwritten?
+                if exist([resdir,'/',datFile])>0;                    delete([resdir,'/',datFile]); end
+                if exist([resdir,'/',sprintf('%s.edf',vpcode)])>0;   delete([resdir,'/',sprintf('%s.edf',vpcode)]); end
+                if exist([resdir,'/',sprintf('%s',vpcode)])>0;       delete([resdir,'/',sprintf('%s',vpcode)]); end
+            end
+        else
+            newFile = 1;
+            mkdir(resdir);
+        end
     end
     
     % prepare screens
@@ -142,12 +150,14 @@ for sess = 1:str2double(nsess)
     % shut down everything
     reddUp;
     
-    % save updated design information
-    save(sprintf('%s.mat',vpcode),'design','visual','scr','const');
-    
-    % sposto i risultati nella cartella corrispondente
-    movefile(datFile,resdir);
-    movefile(vpcode,resdir);
+    if ~const.demo_static
+        % save updated design information
+        save(sprintf('%s.mat',vpcode),'design','visual','scr','const');
+        
+        % sposto i risultati nella cartella corrispondente
+        movefile(datFile,resdir);
+        movefile(vpcode,resdir);
+    end
     
     fprintf(1,'\nThis part of the experiment took %.0f min.',(toc)/60);
     fprintf(1,'\n\nOK!\n');
