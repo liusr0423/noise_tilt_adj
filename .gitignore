@@ -1,0 +1,6 @@
+*.mat
+*.avi
+*.DS_Store
+*.cshrc
+Data/*
+*.m~
