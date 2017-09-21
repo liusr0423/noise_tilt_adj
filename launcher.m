@@ -8,7 +8,7 @@
 % Matteo Lisi, 2016
 %
 
-clear all;  clear mex;  clear functions;
+%clear all;  clear mex;  clear functions;
 addpath('functions/');
 
 home;
@@ -113,7 +113,10 @@ for sess = 1:str2double(nsess)
             mkdir(resdir);
         end
     end
+        % Setup PTB with some default values
+    PsychDefaultSetup(2);
     
+    Screen('Preference', 'SkipSyncTests', 1); 
     % prepare screens
     scr = prepScreen(const);
     
