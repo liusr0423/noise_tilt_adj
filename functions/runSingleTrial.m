@@ -93,7 +93,7 @@ while ~ex_fg
     for i = 1:length(td.tarPos)
         
         % check keyboard
-        [keyisdown, secs, keycode] = KbCheck(-1);
+        [keyisdown, secs, keycode] = KbCheck;
         if keyisdown && (keycode(leftkey) || keycode(rightkey) || keycode(OKkey))
             if keycode(OKkey)
                 if trialPhase == 2 

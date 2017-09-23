@@ -14,7 +14,7 @@ end
 
 sitFlag = 1;
 while sitFlag
-    [keyIsDown, ~, keyCode] = KbCheck(-1);
+    [keyIsDown, ~, keyCode] = KbCheck;
     if keyIsDown
         response = find(keyCode);
         response = response(1);
